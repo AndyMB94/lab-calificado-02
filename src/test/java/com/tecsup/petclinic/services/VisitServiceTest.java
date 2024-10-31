@@ -62,6 +62,21 @@ public class VisitServiceTest {
 
         assertEquals("Vacunación actualizada", updatedVisit.getDescription());
     }
+    @Test
+    public void testDeleteVisit() throws VisitNotFoundException {
+        // Obtener la mascota con ID 28
+        Pet pet = petRepository.findById(28).orElseThrow(() -> new RuntimeException("Pet not found"));
+
+        // Crear una visita para la mascota
+        Visit visit = new Visit(LocalDate.now(), "Desparasitacion", pet);
+        Visit createdVisit = visitService.create(visit);
+
+        // Eliminar la visita
+        visitService.delete(createdVisit.getId());
+
+        // Verificar que la visita ya no existe
+        assertThrows(VisitNotFoundException.class, () -> visitService.findById(createdVisit.getId()));
+    }
 
 
 }
