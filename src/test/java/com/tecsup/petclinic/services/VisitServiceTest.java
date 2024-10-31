@@ -50,5 +50,18 @@ public class VisitServiceTest {
         assertEquals("Revisión anual", foundVisit.get().getDescription());
     }
 
+    @Test
+    public void testUpdateVisit() throws VisitNotFoundException {
+        // Crear y actualizar una visita
+        Pet pet = petRepository.findById(1).orElse(null);
+        Visit visit = new Visit(LocalDate.now(), "Vacunación", pet);
+        Visit createdVisit = visitService.create(visit);
+
+        createdVisit.setDescription("Vacunación actualizada");
+        Visit updatedVisit = visitService.update(createdVisit);
+
+        assertEquals("Vacunación actualizada", updatedVisit.getDescription());
+    }
+
 
 }
