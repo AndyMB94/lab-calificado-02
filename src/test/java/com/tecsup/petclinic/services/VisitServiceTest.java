@@ -8,12 +8,14 @@ import com.tecsup.petclinic.repositories.VisitRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+@Slf4j
 
 @SpringBootTest
 public class VisitServiceTest {
@@ -65,18 +67,29 @@ public class VisitServiceTest {
     @Test
     public void testDeleteVisit() throws VisitNotFoundException {
         // Obtener la mascota con ID 28
-        Pet pet = petRepository.findById(28).orElseThrow(() -> new RuntimeException("Pet not found"));
+        Pet pet = petRepository.findById(28)
+                .orElseThrow(() -> new RuntimeException("Pet not found"));
 
-        // Crear una visita para la mascota
+        // ------------ Create Visit ---------------
+
         Visit visit = new Visit(LocalDate.now(), "Desparasitacion", pet);
         Visit createdVisit = visitService.create(visit);
+        log.info("Created Visit: " + createdVisit);
 
-        // Eliminar la visita
-        visitService.delete(createdVisit.getId());
+        // ------------ Delete Visit ---------------
 
-        // Verificar que la visita ya no existe
-        assertThrows(VisitNotFoundException.class, () -> visitService.findById(createdVisit.getId()));
+        try {
+            visitService.delete(createdVisit.getId());
+            log.info("Visit deleted successfully.");
+        } catch (VisitNotFoundException e) {
+            fail("Failed to delete visit: " + e.getMessage());
+        }
+
+        // ------------ Validation ---------------
+
+        assertThrows(VisitNotFoundException.class, () -> {
+            visitService.findById(createdVisit.getId());
+        }, "Visit should not be found after deletion.");
     }
-
 
 }
