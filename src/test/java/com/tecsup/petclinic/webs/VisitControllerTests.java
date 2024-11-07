@@ -84,5 +84,40 @@ public class VisitControllerTests {
                 .andExpect(jsonPath("$.petId", is(PET_ID)));
     }
 
+    /**
+     * @throws Exception
+     */
+
+    @Test
+    public void testDeleteVisit() throws Exception {
+
+        LocalDate VISIT_DATE = LocalDate.parse("2024-11-07");
+        String DESCRIPTION = "Routine check";
+        int PET_ID = 1;
+
+        VisitTO newVisitTO = new VisitTO();
+        newVisitTO.setVisitDate(VISIT_DATE);
+        newVisitTO.setDescription(DESCRIPTION);
+        newVisitTO.setPetId(PET_ID);
+        ResultActions mvcActions = mockMvc.perform(post("/visits")
+                        .content(om.writeValueAsString(newVisitTO))
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        String response = mvcActions.andReturn().getResponse().getContentAsString();
+        Integer id = JsonPath.parse(response).read("$.id");
+        mockMvc.perform(delete("/visits/" + id))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteVisitKO() throws Exception {
+        mockMvc.perform(delete("/visits/" + "1000"))
+                .andExpect(status().isNotFound());
+    }
+    /**
+     * @throws Exception
+     */
 
 }
