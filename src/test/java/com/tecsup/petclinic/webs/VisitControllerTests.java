@@ -120,4 +120,57 @@ public class VisitControllerTests {
      * @throws Exception
      */
 
+    @Test
+    public void testUpdateVisit() throws Exception {
+        LocalDate VISIT_DATE = LocalDate.parse("2024-11-07");
+        String DESCRIPTION = "Routine check";
+        int PET_ID = 1;
+
+        LocalDate UP_VISIT_DATE = LocalDate.parse("2024-11-08");
+        String UP_DESCRIPTION = "Checkup";
+        int UP_PET_ID = 2;
+
+        VisitTO newVisitTO = new VisitTO();
+        newVisitTO.setVisitDate(VISIT_DATE);
+        newVisitTO.setDescription(DESCRIPTION);
+        newVisitTO.setPetId(PET_ID);
+
+        // CREATE
+        ResultActions mvcActions = mockMvc.perform(post("/visits")
+                        .content(om.writeValueAsString(newVisitTO))
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        String response = mvcActions.andReturn().getResponse().getContentAsString();
+        Integer id = JsonPath.parse(response).read("$.id");
+
+        // UPDATE
+        VisitTO upVisitTO = new VisitTO();
+        upVisitTO.setId(id);
+        upVisitTO.setVisitDate(UP_VISIT_DATE); // Actualizamos con LocalDate
+        upVisitTO.setDescription(UP_DESCRIPTION);
+        upVisitTO.setPetId(UP_PET_ID);
+
+        mockMvc.perform(put("/visits/"+id)
+                        .content(om.writeValueAsString(upVisitTO))
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        // FIND
+        mockMvc.perform(get("/visits/" + id))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(id)))
+                .andExpect(jsonPath("$.visitDate", is(UP_VISIT_DATE.toString())))
+                .andExpect(jsonPath("$.description", is(UP_DESCRIPTION)))
+                .andExpect(jsonPath("$.petId", is(UP_PET_ID)));
+
+        // DELETE
+        mockMvc.perform(delete("/visits/" + id))
+                .andExpect(status().isOk());
+    }
+
 }
