@@ -67,7 +67,7 @@ public class VisitServiceTest {
     @Test
     public void testDeleteVisit() throws VisitNotFoundException {
         // Obtener la mascota con ID 28
-        Pet pet = petRepository.findById(28)
+        Pet pet = petRepository.findById(1)
                 .orElseThrow(() -> new RuntimeException("Pet not found"));
 
         // ------------ Create Visit ---------------

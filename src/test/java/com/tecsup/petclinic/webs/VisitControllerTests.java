@@ -60,4 +60,26 @@ public class VisitControllerTests {
                 .andExpect(status().isNotFound());  // Espera que la respuesta sea un 404
     }
 
+    @Test
+    public void testCreateVisit() throws Exception {
+        LocalDate VISIT_DATE = LocalDate.parse("2024-11-07");
+        String DESCRIPTION = "Routine check";
+        int PET_ID = 1;
+
+        VisitTO newVisitTO = new VisitTO();
+        newVisitTO.setVisitDate(VISIT_DATE);
+        newVisitTO.setDescription(DESCRIPTION);
+        newVisitTO.setPetId(PET_ID);
+
+        mockMvc.perform(post("/visits")
+                        .content(om.writeValueAsString(newVisitTO))
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.visitDate", is(VISIT_DATE.toString())))
+                .andExpect(jsonPath("$.description", is(DESCRIPTION)))
+                .andExpect(jsonPath("$.petId", is(PET_ID)));
+    }
+
+
 }
