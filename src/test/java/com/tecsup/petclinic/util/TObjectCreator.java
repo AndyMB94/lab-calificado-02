@@ -1,5 +1,6 @@
 package com.tecsup.petclinic.util;
 
+import com.tecsup.petclinic.domain.PetTO;
 import com.tecsup.petclinic.entities.Pet;
 
 import java.util.ArrayList;
@@ -40,6 +41,16 @@ public class TObjectCreator {
 		pet.setId(2000);
 		return pet;
 	}
+	public static List<PetTO> getAllPetTOs() {
+		List<PetTO> petTOs  = new ArrayList<PetTO>();
+		petTOs.add(new PetTO(1,"Leo",1,1, "2000-09-07"));
+		petTOs.add(new PetTO(2,"Basil",6,2, "2002-08-06"));
+		petTOs.add(new PetTO(3,"Rosy",2,3, "2001-04-17"));
+		petTOs.add(new PetTO(4,"Jewel",2,3, "2000-03-07"));
+		petTOs.add(new PetTO(5,"Iggy",3,4, "2000-11-30"));
+		return petTOs;
+	}
+
 
 	public static List<Pet> getPetsForFindByName() {
 		List<Pet> pets  = new ArrayList<Pet>();
@@ -59,5 +70,17 @@ public class TObjectCreator {
 		pets.add(new Pet(12,"Lucky",2,10, null));
 		pets.add(new Pet(13,"Sly",1,10, null));
 		return pets;
+	}
+
+	public static PetTO getPetTO() {
+		return new PetTO(1,"Leo",1,1, "2000-09-07");
+	}
+
+	public static PetTO newPetTO() {
+		return new PetTO(-1,"Beethoven",1,1, "2020-05-20");
+	}
+
+	public static PetTO newPetTOForDelete() {
+		return new PetTO(10000,"Beethoven3",1,1, "2020-05-20");
 	}
 }
