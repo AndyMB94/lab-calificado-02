@@ -49,7 +49,6 @@ public class VisitControllerTests {
     }
 
     /**
-     * Prueba para la visita con un ID que no existe.
      *
      * @throws Exception
      */
@@ -59,6 +58,10 @@ public class VisitControllerTests {
         mockMvc.perform(get("/visits/{id}", 666))  // ID inexistente (666)
                 .andExpect(status().isNotFound());  // Espera que la respuesta sea un 404
     }
+
+    /**
+     * @throws Exception
+     */
 
     @Test
     public void testCreateVisit() throws Exception {
